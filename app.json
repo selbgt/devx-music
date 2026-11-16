@@ -1,0 +1,83 @@
+{
+  "name": "Dev X Music 🎶",
+  "description": "Telegram Group Voice Chat Music Bot — Pyrogram + PyTgCalls",
+  "repository": "https://github.com/selbgt/devx-music",
+  "logo": "https://files.catbox.moe/zvziwk.jpg",
+  "keywords": ["telegram", "music-bot", "pyrogram", "pytgcalls", "voice-chat"],
+  "env": {
+    "API_ID": {
+      "description": "API ID from my.telegram.org/apps",
+      "required": true
+    },
+    "API_HASH": {
+      "description": "API Hash from my.telegram.org/apps",
+      "required": true
+    },
+    "BOT_TOKEN": {
+      "description": "Bot token from @BotFather",
+      "required": true
+    },
+    "MONGO_URL": {
+      "description": "MongoDB connection string from cloud.mongodb.com",
+      "required": true
+    },
+    "LOGGER_ID": {
+      "description": "Logger group/channel ID",
+      "required": true
+    },
+    "OWNER_ID": {
+      "description": "Owner Telegram user ID",
+      "required": true
+    },
+    "SESSION": {
+      "description": "Pyrogram session string from @StringFatherBot",
+      "required": true
+    },
+    "BOT_USERNAME": {
+      "description": "Bot username (without @)",
+      "required": false,
+      "value": ""
+    },
+    "DURATION_LIMIT": {
+      "description": "Max song duration in minutes",
+      "required": false,
+      "value": "60"
+    },
+    "QUEUE_LIMIT": {
+      "description": "Max songs in queue",
+      "required": false,
+      "value": "20"
+    },
+    "SUPPORT_CHANNEL": {
+      "description": "Support channel link",
+      "required": false,
+      "value": "https://t.me/DevXMusic"
+    },
+    "SUPPORT_CHAT": {
+      "description": "Support chat link",
+      "required": false,
+      "value": "https://t.me/DevXMusicChat"
+    },
+    "AUTO_LEAVE": {
+      "description": "Auto leave voice chat when empty (True/False)",
+      "required": false,
+      "value": "False"
+    },
+    "VIDEO_PLAY": {
+      "description": "Enable video playback (True/False)",
+      "required": false,
+      "value": "True"
+    }
+  },
+  "buildpacks": [
+    {
+      "url": "heroku/python"
+    }
+  ],
+  "formation": {
+    "worker": {
+      "quantity": 1,
+      "size": "free"
+    }
+  }
+}

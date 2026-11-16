@@ -1,0 +1,17 @@
+# Dev X Music 🎶 — Git Ignore
+
+.env
+*.session
+*.session-journal
+*.log
+logs/
+downloads/
+temp/
+__pycache__/
+*.pyc
+*.pyo
+.DS_Store
+venv/
+.env.local
+*.db
+*.sqlite3
