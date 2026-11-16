@@ -32,6 +32,7 @@ from typing import Dict, List, Optional
 
 import aiohttp
 import motor.motor_asyncio
+from PIL import Image, ImageOps
 from pyrogram import Client, filters
 from pyrogram.types import (
     InlineKeyboardButton,
@@ -172,6 +173,35 @@ def format_duration(seconds: int) -> str:
 
 
 # ═════════════════════════════════════════════════════════════════════
+#  IMAGE HELPERS (rotation fix)
+# ═════════════════════════════════════════════════════════════════════
+
+START_IMG_URL = "https://files.catbox.moe/lrv2hq.jpg"
+
+
+async def fix_image_rotation(url: str, output_path: str = "start_img_fixed.jpg") -> str:
+    """Download image, fix EXIF rotation, save locally."""
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as resp:
+            if resp.status != 200:
+                return url
+            data = await resp.read()
+
+    with open(output_path, "wb") as f:
+        f.write(data)
+
+    try:
+        img = Image.open(output_path)
+        # Apply EXIF transpose to fix rotation
+        img = ImageOps.exif_transpose(img)
+        img.save(output_path, "JPEG")
+        return output_path
+    except Exception as e:
+        print(f"[Image] Rotation fix failed: {e}")
+        return output_path
+
+
+# ═════════════════════════════════════════════════════════════════════
 #  CLIENTS
 # ═════════════════════════════════════════════════════════════════════
 
@@ -248,7 +278,13 @@ async def start_cmd(_, message: Message):
         "• /playlist — Manage playlists\n\n"
         "Add me to your group and start playing music! 🎶"
     )
-    await message.reply(text, reply_markup=start_keyboard())
+    # Fix rotation and send image
+    fixed_img = await fix_image_rotation(START_IMG_URL)
+    await message.reply_photo(
+        photo=fixed_img,
+        caption=text,
+        reply_markup=start_keyboard(),
+    )
 
 
 @app.on_message(filters.command("ping"))
