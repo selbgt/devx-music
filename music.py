@@ -232,12 +232,17 @@ def start_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         [
             [
-                InlineKeyboardButton("➕ Add to Group", url="https://t.me/" + config.BOT_USERNAME + "?startgroup=true"),
-                InlineKeyboardButton("🆘 Support", url=config.SUPPORT_CHAT),
+                InlineKeyboardButton("Add me to your group", url="https://t.me/" + config.BOT_USERNAME + "?startgroup=true"),
             ],
             [
-                InlineKeyboardButton("📢 Channel", url=config.SUPPORT_CHANNEL),
-                InlineKeyboardButton("👤 Owner", url=f"tg://user?id={config.OWNER_ID}"),
+                InlineKeyboardButton("Help", callback_data="help"),
+            ],
+            [
+                InlineKeyboardButton("Support", url=config.SUPPORT_CHAT),
+                InlineKeyboardButton("Channel", url=config.SUPPORT_CHANNEL),
+            ],
+            [
+                InlineKeyboardButton("Source", url="https://github.com/selbgt/devx-music"),
             ],
         ]
     )
@@ -265,18 +270,11 @@ def control_keyboard(chat_id: int) -> InlineKeyboardMarkup:
 @app.on_message(filters.command("start") & filters.private)
 async def start_cmd(_, message: Message):
     text = (
-        f"🎵 **Welcome to {config.BOT_NAME}!**\n\n"
-        "I'm a powerful Telegram group voice chat music bot.\n\n"
-        "**Features:**\n"
-        "• /play — Play audio in voice chat\n"
-        "• /vplay — Play video in voice chat\n"
-        "• /skip — Skip current track\n"
-        "• /stop — Stop & leave voice chat\n"
-        "• /pause — Pause playback\n"
-        "• /resume — Resume playback\n"
-        "• /queue — Show current queue\n"
-        "• /playlist — Manage playlists\n\n"
-        "Add me to your group and start playing music! 🎶"
+        f"Hey 🎵 **{config.BOT_NAME}!**\n\n"
+        "This is **Dev X Music**!\n\n"
+        "A music player bot with some awesome and useful features.\n\n"
+        "Click on the help button for more info.\n\n"
+        f"🤖 **{config.BOT_NAME}**"
     )
     # Fix rotation and send image
     fixed_img = await fix_image_rotation(START_IMG_URL)
@@ -547,6 +545,26 @@ async def playlist_cmd(_, message: Message):
 # ═════════════════════════════════════════════════════════════════════
 #  CALLBACK QUERIES (Inline buttons)
 # ═════════════════════════════════════════════════════════════════════
+
+@app.on_callback_query(filters.regex(r"^help$"))
+async def help_cb(_, query):
+    help_text = (
+        f"🎵 **{config.BOT_NAME} — Help**\n\n"
+        "**Commands:**\n"
+        "• /play <song> — Play audio in voice chat\n"
+        "• /vplay <song> — Play video in voice chat\n"
+        "• /skip — Skip current track\n"
+        "• /stop — Stop & leave voice chat\n"
+        "• /pause — Pause playback\n"
+        "• /resume — Resume playback\n"
+        "• /queue — Show current queue\n"
+        "• /playlist — Manage playlists\n"
+        "• /auth <user_id> — Authorize user (owner only)\n"
+        "• /ping — Ping test\n\n"
+        f"🤖 **{config.BOT_NAME}**"
+    )
+    await query.edit_message_text(help_text, reply_markup=start_keyboard())
+
 
 @app.on_callback_query(filters.regex(r"^(pause|resume|skip|stop)\|(\d+)$"))
 async def control_cb(_, query):
